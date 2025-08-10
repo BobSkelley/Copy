@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:FitnessTracker.ViewModels"
+             xmlns:models="clr-namespace:FitnessTracker.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:DataType="viewmodels:GoalsViewModel"
+             x:Class="FitnessTracker.Views.GoalsPage"
+             Title="My Goals">
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+            EventName="Appearing"
+            Command="{Binding AppearingCommand}" />
+    </ContentPage.Behaviors>
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <Label 
+            Grid.Row="0"
+            Text="My Goals"
+            Style="{StaticResource Headline}"
+            Margin="0,20,0,0"
+            HorizontalOptions="Center" />
+
+        <ScrollView Grid.Row="1" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" HorizontalOptions="Center">
+            <FlexLayout BindableLayout.ItemsSource="{Binding Goals}"
+                        Direction="Row"
+                        Wrap="NoWrap"
+                        JustifyContent="Center"
+                        Padding="20,0">
+
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:Goal">
+                        <Border StrokeShape="RoundRectangle 20" Padding="15" HeightRequest="150" WidthRequest="250" Margin="7.5,0">
+                            <Grid RowDefinitions="Auto, *, Auto">
+                                <Label Grid.Row="0" Text="{Binding Description}" FontSize="18" FontAttributes="Bold"/>
+
+                                <ProgressBar Grid.Row="1" Progress="{Binding Progress}" ProgressColor="{StaticResource Primary}" VerticalOptions="Center"/>
+
+                                <Label Grid.Row="2" Text="{Binding ProgressText}" HorizontalOptions="End" VerticalOptions="End"/>
+
+                                <Button Text="X" 
+                                        Grid.Row="0" 
+                                        HorizontalOptions="End" 
+                                        VerticalOptions="Start"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:GoalsViewModel}}, Path=DeleteGoalCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Transparent"
+                                        TextColor="Gray"
+                                        FontSize="12"
+                                        WidthRequest="40"
+                                        HeightRequest="40"/>
+
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:GoalsViewModel}}, Path=UpdateGoalCommand}"
+                                                          CommandParameter="{Binding .}"/>
+                                </Border.GestureRecognizers>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </FlexLayout>
+        </ScrollView>
+
+        <Button Grid.Row="2" Text="Add New Goal" Command="{Binding AddGoalCommand}" HorizontalOptions="Center" Margin="0,20" />
+
+    </Grid>
+</ContentPage>

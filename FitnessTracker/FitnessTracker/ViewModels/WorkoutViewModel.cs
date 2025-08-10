@@ -1,12 +1,10 @@
 ﻿using FitnessTracker.Models;
 using FitnessTracker.Services;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using FitnessTracker.Views;
 
 namespace FitnessTracker.ViewModels;
 
@@ -38,16 +36,21 @@ public class WorkoutViewModel : BaseViewModel
         IsRefreshing = true;
 
         Workouts.Clear();
-        foreach (var workout in _workoutManager.GetWorkouts().OrderByDescending(w => w.Date))
+        var workouts = _workoutManager.GetWorkouts();
+        if (workouts != null)
         {
-            Workouts.Add(workout);
+            foreach (var workout in workouts.OrderByDescending(w => w.Date))
+            {
+                Workouts.Add(workout);
+            }
         }
 
         IsRefreshing = false;
+        await Task.CompletedTask; // To satisfy async warning
     }
 
     private async Task AddWorkout()
     {
-        await Shell.Current.GoToAsync(nameof(AddWorkoutPage));
+        await Shell.Current.GoToAsync(nameof(WorkoutLogPage));
     }
 }

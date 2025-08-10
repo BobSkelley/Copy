@@ -1,9 +1,9 @@
 ﻿namespace FitnessTracker.Models
 {
-    public class Exercise
+    public class Athlete
     {
         public int ID { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int PrimaryMuscleGroupID { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

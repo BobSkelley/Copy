@@ -1,35 +1,31 @@
-﻿
-using FitnessTracker.Models;
-using FitnessTracker.Services;
+﻿using FitnessTracker.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 
-    namespace FitnessTracker.Services;
-
+namespace FitnessTracker.Services
+{
     public class WorkoutManager
     {
-        private readonly DataService _dataService;
-        private List<Workout> _workouts = new();
+        private readonly AppDataService _appDataService;
+        private List<Workout> _workouts;
 
-        public WorkoutManager(DataService dataService)
+        public WorkoutManager(AppDataService appDataService)
         {
-            _dataService = dataService;
-            LoadWorkouts();
+            _appDataService = appDataService;
+            _workouts = _appDataService.GetWorkouts() ?? new List<Workout>();
         }
 
         public List<Workout> GetWorkouts() => _workouts;
 
-        public void AddWorkout(Workout workout)
+        public async Task AddWorkout(Workout workout)
         {
+            if (_workouts == null)
+            {
+                _workouts = new List<Workout>();
+            }
             _workouts.Add(workout);
-            SaveWorkouts();
-        }
-
-        private async void LoadWorkouts()
-        {
-            _workouts = await _dataService.LoadWorkouts() ?? new List<Workout>();
-        }
-
-        private async void SaveWorkouts()
-        {
-            await _dataService.SaveWorkouts(_workouts);
+            await _appDataService.SaveWorkouts(_workouts);
         }
     }
+}
